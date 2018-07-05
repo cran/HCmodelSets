@@ -1,0 +1,12 @@
+f0e91ea651f8530cef2a32a12aec385c *DESCRIPTION
+9e4a2d0ff445af70f49c6bc63116e92a *LICENSE
+755e1cca2c71d29443632a62fda4d2b8 *NAMESPACE
+10711011b1a9d0fc3c69727e8f0ce55d *R/DGP.R
+3b0ac592fbea54cb824f7702aea34d21 *R/Exploratory.Phase.R
+dbe63d8ef768b723114b1cde2cea1ca7 *R/ModelSelection.Phase.R
+5b8e46c380495371c13d5dd351c8549f *R/Reduction.Phase.R
+6ed12f73785f81eadfc9f0040b664cff *README.md
+1f4ed988ce99341a1c3ab817db32e6a4 *man/DGP.Rd
+11ed8317bcf27d8e1bd6570b8cbf0bd3 *man/Exploratory.Phase.Rd
+71184d63ce2fca84cbc9acbcfec1986d *man/ModelSelection.Phase.Rd
+ed47cd035277c0501df12535b097e4a9 *man/Reduction.Phase.Rd
