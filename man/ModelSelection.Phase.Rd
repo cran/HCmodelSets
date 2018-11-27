@@ -6,7 +6,7 @@
 This function tests low dimensional subsests of the set of retained variables from the reduction phase and any squared or interaction terms suggested at the exploratory phase. Lists of well-fitting models of each dimension are returned.
 }
 \usage{
-ModelSelection.Phase(X,Y, list.reduction, family=gaussian, log.transf=FALSE,
+ModelSelection.Phase(X,Y, list.reduction, family=gaussian,
                       signif=0.01, sq.terms=NULL, in.terms=NULL,
                       modelSize=NULL, Cox.Hazard = FALSE)
 }
@@ -16,7 +16,6 @@ ModelSelection.Phase(X,Y, list.reduction, family=gaussian, log.transf=FALSE,
   \item{Y}{Response vector.}
   \item{list.reduction}{Indices of variables that where chosen at the reduction phase.}
   \item{family}{A description of the error distribution and link function to be used in the model. For glm this can be a character string naming a family function, a family function or the result of a call to a family function. See \code{\link{family}} for more details.}
-  \item{log.transf}{Apply a log transformation to the elements of the design matrix. Default is FALSE.}
   \item{signif}{Significance level of the likelihood ratio test against the comprehensive model. The default is 0.01.}
   \item{sq.terms}{Indices of squared terms suggested at the exploratory phase (See \code{\link{Exploratory.Phase}})}
   \item{in.terms}{Indices of pairs of variables suggested at the exploratory phase (See \code{\link{Exploratory.Phase}})}
@@ -31,7 +30,7 @@ ModelSelection.Phase(X,Y, list.reduction, family=gaussian, log.transf=FALSE,
 \references{
 Cox, D. R. and Battey, H. S. (2017). Large numbers of explanatory variables, a semi-descriptive analysis. \emph{Proceedings of the National Academy of Sciences}, 114(32), 8592-8595.
 
-Battey, H. S. and Cox, D. R. (2018). Large numbers of explanatory variables: A probabilistic assessment. \emph{Proceedings of the Royal Society of London, A.}, to appear.
+Battey, H. S. and Cox, D. R. (2018). Large numbers of explanatory variables: a probabilistic assessment. \emph{Proceedings of the Royal Society of London, A.}, 474(2215), 20170631
 }
 \author{
 Hoeltgebaum, H. H.
@@ -44,7 +43,7 @@ Hoeltgebaum, H. H.
 }
 \examples{
 \donttest{
-## Generates a random DGP using the DGP from the HCmodelSelection package
+## Generates a random DGP
 dgp = DGP(s=5, a=3, sigStrength=1, rho=0.9, n=100, intercept=5, noise=1,
           var=1, d=1000, DGP.seed = 2019)
 

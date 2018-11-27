@@ -1,4 +1,4 @@
-Reduction.Phase = function(X,Y,family=gaussian, log.transf=FALSE, dmHC=NULL,vector.signif=NULL,seed.HC = NULL, Cox.Hazard = FALSE){
+Reduction.Phase = function(X,Y,family=gaussian, dmHC=NULL,vector.signif=NULL,seed.HC = NULL, Cox.Hazard = FALSE){
 
   glmRoutine = function(subsetX,Y,family=gaussian,intercept=TRUE,significance=NULL, Cox.Hazard=FALSE){
 
@@ -70,9 +70,6 @@ Reduction.Phase = function(X,Y,family=gaussian, log.transf=FALSE, dmHC=NULL,vect
     if(ncol(Y)!=2){
       stop('You choose cox family! Therefore you must provide the survival times in column 1 and a binary vector on column 2!')
     }
-    if(length(unique(Y[,2]))!=2){
-      stop('You choose cox family! Therefore your Y must contain binary responses!')
-    }
   } else{ Y = as.numeric(Y) }
 
   if(Cox.Hazard==FALSE & ncol(as.matrix(Y))==2){
@@ -86,9 +83,9 @@ Reduction.Phase = function(X,Y,family=gaussian, log.transf=FALSE, dmHC=NULL,vect
   if(is.null(dmHC)){
     v=2:5
     dmHC = v[ceiling(d^(1/v)) <= 15 & ceiling(d^(1/v))>=10]
-    if(dmHC==0){
-      stop('Hypercube dimension was not specified and conditioned to the number of variables in the design matrix could not the calculated.','\n',
-           'Consider delete/include/transform some variables...')
+    if(length(dmHC)==0){
+      stop('Hypercube dimension was not specified and conditioned to the number of variables in the design matrix could not be calculated.','\n',
+           'Consider delete/include some variables...')
     }
   }
 
@@ -101,18 +98,12 @@ Reduction.Phase = function(X,Y,family=gaussian, log.transf=FALSE, dmHC=NULL,vect
     stop(paste('The lenght of vector.signif is not the same as the HC dimension',dmHC,'.'))
   }
 
-  ### Design Matrix Transformation
-  if(log.transf==TRUE){
-    lX = log(X)
-    mLX = colMeans(lX)
-    X = scale(lX, center=TRUE, scale=FALSE)
-  }
-
   ### Signif vectors
   if(is.null(vector.signif)){
     signif.Default =TRUE
   } else{
     signif.Default =FALSE
+    vector.signif = rev(vector.signif)
     vector.signif = c(NA,vector.signif)
   }
 
@@ -282,6 +273,10 @@ Reduction.Phase = function(X,Y,family=gaussian, log.transf=FALSE, dmHC=NULL,vect
     ### intermediate step to handle 0`s here
     hypercubeSelect=array(0,dim=c(dimHC,dimHC,dimHC,dimHC))
 
+    if(all(dim(hypercube)==0)){
+      stop(paste('No variables selected at stage 4, increase p-value.'))
+    }
+
     for(ind4 in 1:dim(hypercube)[4]){
       for(ind3 in 1:dim(hypercube)[3]){
         for(indR in 1:dim(hypercube)[1]){
@@ -356,7 +351,6 @@ Reduction.Phase = function(X,Y,family=gaussian, log.transf=FALSE, dmHC=NULL,vect
     List.Selection[[paste('Hypercube with dim',4)]][[paste('numSelected3')]] = setSelected3Times
     List.Selection[[paste('Hypercube with dim',4)]][[paste('numSelected4')]] = setSelected4Times
 
-
     aux.dmHC4 <- 'Y' #readline(cat("Reduction of dimension 4 done!", "\n", length(setSelected4Times5),
     #        "Variables selected at least 4 times","\n",length(setSelected3Times5),
     #        "Variables selected at least 3 times","\n",length(setSelected2Times5),
@@ -397,6 +391,10 @@ Reduction.Phase = function(X,Y,family=gaussian, log.transf=FALSE, dmHC=NULL,vect
 
     ### intermediate step to handle 0`s here
     hypercubeSelect=array(0,dim=c(dimHC,dimHC,dimHC))
+
+    if(all(dim(hypercube)==0)){
+      stop(paste('No variables selected at stage 3, increase p-value.'))
+    }
 
     for(indL in 1:dim(hypercube)[3]){
       for(indR in 1:dim(hypercube)[1]){
@@ -447,11 +445,29 @@ Reduction.Phase = function(X,Y,family=gaussian, log.transf=FALSE, dmHC=NULL,vect
     Matrix.Selection[[paste('Hypercube with dim',3)]] = c(numSelected1times,numSelected2times,numSelected3times)
     names(Matrix.Selection[[paste('Hypercube with dim',3)]]) = c('numSelected1','numSelected2','numSelected3')
 
-    List.Selection[[paste('Hypercube with dim',3)]][[paste('numSelected1')]] = setSelected1Times
-    List.Selection[[paste('Hypercube with dim',3)]][[paste('numSelected2')]] = setSelected2Times
-    List.Selection[[paste('Hypercube with dim',3)]][[paste('numSelected3')]] = setSelected3Times
+    if(numSelected1times>1){
+      List.Selection[[paste('Hypercube with dim',3)]][[paste('numSelected1')]] = setSelected1Times
+    } else{
+      List.Selection[[paste('Hypercube with dim',3)]][[paste('numSelected1')]] = c(0,ifelse(length(setSelected1Times)==0,0,c(setSelected1Times)))
+      List.Selection$`Hypercube with dim 3`$numSelected1 = List.Selection$`Hypercube with dim 3`$numSelected1[-1]
+    }
+
+    if(numSelected2times>1){
+      List.Selection[[paste('Hypercube with dim',3)]][[paste('numSelected2')]] = setSelected2Times
+    } else{
+      List.Selection[[paste('Hypercube with dim',3)]][[paste('numSelected2')]] = c(0,ifelse(length(setSelected2Times)==0,0,c(setSelected2Times)))
+      List.Selection$`Hypercube with dim 3`$numSelected2 = List.Selection$`Hypercube with dim 3`$numSelected2[-1]
+    }
+
+    if(numSelected3times>1){
+      List.Selection[[paste('Hypercube with dim',3)]][[paste('numSelected3')]] = setSelected3Times
+    } else{
+      List.Selection[[paste('Hypercube with dim',3)]][[paste('numSelected3')]] = c(0,ifelse(length(setSelected3Times)==0,0,c(setSelected3Times)))
+      List.Selection$`Hypercube with dim 3`$numSelected3 = List.Selection$`Hypercube with dim 3`$numSelected3[-1]
+    }
 
     aux.dmHC3 <- 'Y'
+
   }
 
   ########## case in which dmHC=2 ##########
@@ -489,6 +505,10 @@ Reduction.Phase = function(X,Y,family=gaussian, log.transf=FALSE, dmHC=NULL,vect
     ### intermediate step to handle 0`s here
     hypercubeSelect=array(0,dim=c(dimHC,dimHC))
 
+    if(all(dim(hypercube)==0)){
+      stop(paste('No variables selected at stage 2, increase p-value.'))
+    }
+
     for(indR in 1:dim(hypercube)[1]){
       if(length(which(hypercube[indR,]!=0))>0){
         idx.aux = which(hypercube[indR,]!=0)
@@ -521,12 +541,22 @@ Reduction.Phase = function(X,Y,family=gaussian, log.transf=FALSE, dmHC=NULL,vect
     Matrix.Selection[[paste('Hypercube with dim',2)]] = c(numSelected1times,numSelected2times)
     names(Matrix.Selection[[paste('Hypercube with dim',2)]]) = c('numSelected1','numSelected2')
 
-    List.Selection[[paste('Hypercube with dim',2)]][[paste('numSelected1')]] = setSelected1Times
-    List.Selection[[paste('Hypercube with dim',2)]][[paste('numSelected2')]] = setSelected2Times
+    if(numSelected1times>1){
+      List.Selection[[paste('Hypercube with dim',2)]][[paste('numSelected1')]] = setSelected1Times
+    } else{
+      List.Selection[[paste('Hypercube with dim',2)]][[paste('numSelected1')]] = c(0,ifelse(length(setSelected1Times)==0,0,c(setSelected1Times)))
+      List.Selection$`Hypercube with dim 2`$numSelected1 = List.Selection$`Hypercube with dim 2`$numSelected1[-1]
+    }
+
+    if(numSelected2times>1){
+      List.Selection[[paste('Hypercube with dim',2)]][[paste('numSelected2')]] = setSelected2Times
+    } else{
+      List.Selection[[paste('Hypercube with dim',2)]][[paste('numSelected2')]] = c(0,ifelse(length(setSelected2Times)==0,0,c(setSelected2Times)))
+      List.Selection$`Hypercube with dim 2`$numSelected2 = List.Selection$`Hypercube with dim 2`$numSelected2[-1]
+    }
 
     aux.dmHC2 <- 'Y' #readline(cat("Reduction of dimension 2 done!", "\n", length(setSelected2Times),
-    #"Variables selected at least 2 times","\n",length(setSelected1Times),
-    #"Variables selected at least 1 times","\n", "Wanna proceed with reduction?[Y/N]"))
+
   }
 
   return(list("Matrix.Selection" = Matrix.Selection, "List.Selection" = List.Selection))

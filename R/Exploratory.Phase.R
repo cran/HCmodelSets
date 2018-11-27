@@ -1,4 +1,4 @@
-Exploratory.Phase = function(X, Y, list.reduction, family=gaussian, log.transf=FALSE, signif=0.01, silent=TRUE, Cox.Hazard = FALSE){
+Exploratory.Phase = function(X, Y, list.reduction, family=gaussian, signif=0.01, silent=TRUE, Cox.Hazard = FALSE){
 
   X = as.matrix(X)
 
@@ -14,13 +14,6 @@ Exploratory.Phase = function(X, Y, list.reduction, family=gaussian, log.transf=F
 
   if(Cox.Hazard==FALSE & ncol(as.matrix(Y))==2){
     stop('You need to specify Cox.Hazard==TRUE to run cox model!')
-  }
-
-  ### Design Matrix Transformation
-  if(log.transf==TRUE){
-    lX = log(X)
-    mLX = colMeans(lX)
-    X = scale(lX, center=TRUE, scale=FALSE)
   }
 
   n = nrow(X)
@@ -73,17 +66,28 @@ Exploratory.Phase = function(X, Y, list.reduction, family=gaussian, log.transf=F
   if(silent==FALSE){
 
     if(is.null(mat.select.INTER)){
-      stop('No variables selected with interaction! Please increase the significance level.')
+      stop('No variables selected with interaction! Please increase the significance level or silent=TRUE.')
     }
 
     ## deciding upon type of Y
-    type.var = ifelse(length(unique(Y))==2,"B","C")
+    if(Cox.Hazard==FALSE){
+      type.var = ifelse(length(unique(Y))==2,"B","C")
+    } else{
+      type.var = ifelse(length(unique(Y[,1]))==2,"B","C")
+    }
 
     mat.response.INTER = NULL
+
     for(i in 1:nrow(mat.select.INTER)){
 
-      data.res = data.frame("X1"=X[,mat.select.INTER[i,1]],
-                            "X2"=X[,mat.select.INTER[i,2]], "Y"= Y)
+      if(Cox.Hazard==FALSE){
+        data.res = data.frame("X1"=X[,mat.select.INTER[i,1]],
+                              "X2"=X[,mat.select.INTER[i,2]], "Y"= Y)
+      } else{
+        data.res = data.frame("X1"=X[,mat.select.INTER[i,1]],
+                              "X2"=X[,mat.select.INTER[i,2]], "Y"= Y[,1])
+      }
+
       names(data.res)[1] = mat.select.INTER[i,1]
       names(data.res)[2] = mat.select.INTER[i,2]
 
@@ -111,7 +115,7 @@ Exploratory.Phase = function(X, Y, list.reduction, family=gaussian, log.transf=F
       mat.response.INTER[i] = answ
     }
 
-    mat.select.INTER = mat.select.INTER[which(mat.response.INTER=="N"),]
+    mat.select.INTER = matrix(mat.select.INTER[which(mat.response.INTER=="N"),],ncol=2)
 
     if(nrow(mat.select.INTER)==0){ mat.select.INTER=NULL }
 
@@ -119,5 +123,4 @@ Exploratory.Phase = function(X, Y, list.reduction, family=gaussian, log.transf=F
 
 
   return(list("mat.select.SQ"=mat.select.SQ,"mat.select.INTER"=mat.select.INTER))
-
 }
