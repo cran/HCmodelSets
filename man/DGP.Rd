@@ -25,13 +25,13 @@ DGP(s,a,sigStrength,rho,n,noise=NULL,var,d,intercept,type.response="N",DGP.seed=
   \item{DGP.seed}{Seed for the random number generator.}
   \item{scale}{scale parameter of the proportional hazards model with Weibull baseline hazard.}
   \item{shape}{shape parameter of the proportional hazards model with Weibull baseline hazard.}
-  \item{rate}{rate parameter of the exponential distribution of censoring times. If is not provided, uncensoring data is generated.}
+  \item{rate}{rate parameter of the exponential distribution of censoring times. If not provided, uncensored data are generated.}
 }
 
 \value{
 \item{X}{The simulated design matrix.}
 \item{Y}{The simulated response variable.}
-\item{TRUE.idx}{Indexes of the variables in the true model.}
+\item{TRUE.idx}{Indices of the variables in the true model.}
 \item{status}{If type.response="S", provides the status from survival data.}
 }
 \references{
