@@ -30,7 +30,7 @@ Cox, D. R. and Battey, H. S. (2017). Large numbers of explanatory variables, a s
 
 Battey, H. S. and Cox, D. R. (2018). Large numbers of explanatory variables: a probabilistic assessment. \emph{Proceedings of the Royal Society of London, A.}, 474(2215), 20170631.
 
-Hoeltgebaum, H. H., & Battey, H. S. (2019). HCmodelSets: An R package for specifying sets of well-fitting models in regression with a large number of potential explanatory variables. \emph{arXiv preprint arXiv:1903.05715.}
+Hoeltgebaum, H., & Battey, H. S. (2019). HCmodelSets: An R Package for Specifying Sets of Well-fitting Models in High Dimensions. \emph{The R Journal}, 11(2), 370-379.
 }
 \author{
 Hoeltgebaum, H. H.
