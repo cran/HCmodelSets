@@ -2,7 +2,7 @@ Package: HCmodelSets
 Type: Package
 Title: Regression with a Large Number of Potential Explanatory
         Variables
-Version: 1.1.1
+Version: 1.1.2
 Author: H. H. Hoeltgebaum
 Maintainer: H. H. Hoeltgebaum <hh3015@ic.ac.uk>
 BugReports: https://github.com/hhhelfer/HCmodelSets/issues
@@ -10,11 +10,12 @@ Description: Software for performing the reduction, exploratory and model select
 License: GPL-2 | GPL-3
 Encoding: UTF-8
 LazyData: true
+LazyDataCompression: xz
 Depends: R (>= 3.5.0), mvtnorm, ggplot2, survival,
 RoxygenNote: 7.1.0
 NeedsCompilation: no
 Suggests: R.rsp
 VignetteBuilder: R.rsp
-Packaged: 2020-04-20 15:34:30 UTC; hhhelfer
+Packaged: 2021-05-31 13:18:47 UTC; helfer
 Repository: CRAN
-Date/Publication: 2020-04-20 16:10:02 UTC
+Date/Publication: 2021-06-01 07:30:02 UTC
